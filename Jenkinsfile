@@ -9,7 +9,7 @@ pipeline{
     stages{
         stage('SCM'){
             steps{
-                git 'https://github.com/Manash2712/Docker-Ansible-Jenkins'
+                git branch: 'jekinsfile', url: 'https://github.com/Manash2712/Docker-Ansible-Jenkins'
             }
         }
         stage('Maven Build'){
