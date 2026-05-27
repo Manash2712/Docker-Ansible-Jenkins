@@ -22,6 +22,25 @@ pipeline{
                 sh "docker build . -t manashchauhan/jenkinsansible:${DOCKER_TAG} "
             }
         }
+        stage('DockerHub Push'){
+            steps{
+                withCredentials([string(credentialsId: 'DockerHubPW', variable: 'dockerhubpw')]) {
+                    sh "docker login -u manashchauhan -p ${dockerhubpw}"
+                }
+                sh "docker push manashchauhan/jenkinsansible:${DOCKER_TAG} "
+            }
+        }
+        stage('DockerHub Deploy'){
+            steps{
+                ansiblePlaybook credentialsId: 'dev-server', 
+                disableHostKeyChecking: true, 
+                extras: 'DOCKER_TAG="${DOCKER_TAG}"', 
+                installation: 'ansible', 
+                inventory: 'dev.inv', 
+                playbook: 'deploy-docker.yml', 
+                vaultTmpPath: ''
+            }
+        }
     }
 }
 
